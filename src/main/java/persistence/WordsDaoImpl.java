@@ -1,24 +1,19 @@
 package persistence;
 
 import domain.*;
-
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
-import javax.json.JsonObject;
+import java.util.Collections;
 
 import org.json.JSONObject;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
+	WordService wordService = new WordService();
+	LanguageService languageService = new LanguageService();
 
 	@Override
 	public Boolean sendWords(ArrayList<Word> words) {
@@ -68,8 +63,6 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 	}
 
 	public ArrayList<Wordlist> getWordLists() {
-		WordService wordService = new WordService();
-		LanguageService languageService = new LanguageService();
 		ArrayList<Wordlist> result = new ArrayList<>();
 		try (Connection con = super.getConnection()) {
 			PreparedStatement pst = con.prepareStatement(
@@ -98,8 +91,6 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 
 	@Override
 	public ArrayList<Word> getWordsFromList(int id) {
-		WordService wordService = new WordService();
-		LanguageService languageService = new LanguageService();
 		ArrayList<Word> result = new ArrayList<>();
 		try (Connection con = super.getConnection()) {
 			PreparedStatement pst = con.prepareStatement(
@@ -116,7 +107,7 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 				int languageId = res.getInt("language");
 				String languageCode = res.getString("languageCode");
 				String languageName = res.getString("languageName");
-				result.add(wordService.createWord(wordid, word, wordService.createWordlist(languageName, wordlistid,
+				result.add(wordService.createWord(wordid, word, wordService.createWordlist(wordlistName, wordlistid,
 						languageService.createLanguage(languageName, languageCode, languageId))));
 			}}
 
@@ -138,7 +129,8 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 			PreparedStatement pst2 = con.prepareStatement("delete from wordlists where id = ?");
 			pst2.setInt(1, id);
 			int res2 = pst2.executeUpdate();
-			if (res2 != 0) {
+			
+			if (res2 != 0 && res != 0) {
 				result = true;
 			}
 
@@ -171,8 +163,6 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 	public Boolean postWords(String json) {
 		Boolean result = false;
 		JSONObject object = new JSONObject(json);
-		WordService wordService = new WordService();
-		LanguageService languageService = new LanguageService();
 
 		String wordListName = object.get("name").toString();
 		String wordListUrl = object.get("url").toString();

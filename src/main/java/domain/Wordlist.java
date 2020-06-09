@@ -17,7 +17,11 @@ public class Wordlist {
         this.language = language;
     }
 
-    public int getId() {
+    public Wordlist(int wordlistId) {
+		this.id = wordlistId;
+	}
+
+	public int getId() {
         return this.id;
     }
 

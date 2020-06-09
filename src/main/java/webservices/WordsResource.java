@@ -7,9 +7,6 @@ import persistence.WordsDao;
 import persistence.WordsDaoImpl;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
-import org.glassfish.jersey.process.internal.RequestContext;
-
 import java.util.ArrayList;
 
 @Path("/words")

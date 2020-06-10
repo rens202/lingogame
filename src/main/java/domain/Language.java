@@ -16,6 +16,9 @@ public class Language {
 		this.id = wordListLanguage;
 	}
 
+	public Language() {
+	}
+
 	public String getCode(){
         return this.code;
     }

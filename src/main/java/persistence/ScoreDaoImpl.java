@@ -37,6 +37,9 @@ public class ScoreDaoImpl extends PostgresBaseDao implements ScoreDao {
 		} catch (SQLException sqle) {
 			sqle.printStackTrace();
 		}
+		catch(NullPointerException e) {
+			e.printStackTrace();
+		}
 
 		return result;
 	}
@@ -58,7 +61,10 @@ public class ScoreDaoImpl extends PostgresBaseDao implements ScoreDao {
 		}
 		catch (SQLException sqle) {
 			sqle.printStackTrace();
+		}catch(NullPointerException e) {
+			e.printStackTrace();
 		}
+
 		return result;
 	}
 

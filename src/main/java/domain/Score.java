@@ -5,12 +5,6 @@ public class Score {
 	private String username;
 	private Wordlist wordlist;
 	private int turns;
-	
-	public Score(int id, String username, Wordlist wordlist) {
-		this.id = id;
-		this.username = username;
-		this.wordlist = wordlist;
-	}
 
 	public Score(int id2, String name, Wordlist wordlist, int turns) {
 		this.id = id2;

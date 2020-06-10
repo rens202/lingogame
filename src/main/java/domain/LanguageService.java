@@ -8,9 +8,4 @@ public class LanguageService {
 
     }
 
-	public Language createLanguage(int wordListLanguage) {
-		Language result = new Language(wordListLanguage);
-
-        return result;
-	}
 }

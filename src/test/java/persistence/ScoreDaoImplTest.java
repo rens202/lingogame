@@ -25,8 +25,8 @@ public class ScoreDaoImplTest extends PostgresBaseDao {
     }
 
     @Test
-    public void connectionNotNull(){
-        assertNotNull(connection);
+    public void connectionNull(){
+        assertNull(connection);
     }
 
     @Test

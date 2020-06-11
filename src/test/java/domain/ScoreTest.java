@@ -5,8 +5,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ScoreTest {
-    Score score = new Score(1, "Rens", new Wordlist(1), 5);
-
+    Score score = new Score(new User(2, "Rens"), new Wordlist(1), 5);
     @Test
     public void toStringTest(){
         assertNotNull(score.toString());

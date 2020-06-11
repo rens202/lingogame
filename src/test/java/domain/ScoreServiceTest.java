@@ -9,7 +9,7 @@ public class ScoreServiceTest {
 
     @Test
     public void createScore() {
-        assertNotNull(scoreService.createScore(1, "Rens", 5, 5));
+        assertNotNull(scoreService.createScore(new User(2, "Rens"), 5, 5));
 
 
     }

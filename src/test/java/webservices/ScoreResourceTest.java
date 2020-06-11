@@ -4,28 +4,31 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import domain.Score;
+import domain.User;
+import domain.Wordlist;
+import webservices.auth.MySecurityContext;
 
 import static org.junit.Assert.*;
 
 public class ScoreResourceTest {
     ScoreResource scoreResource;
-    String jsonString;
+    Score score;
+    MySecurityContext msc;
+    
 
     @Before
     public void setUp() {
         scoreResource = new ScoreResource();
-        JSONObject json = new JSONObject();
-        json.put("turns", 6);
-        json.put("name", "Rens");
-        json.put("wordlist", 1);
-        jsonString = json.toString();
+        score = new Score(new User(2, "rens"), new Wordlist(1), 0);
+        msc = new MySecurityContext("rens", "rle", true);
+        
+    }
+    
+    public void getScore() {
+    	assertNotNull(scoreResource.getAllScores());
+    	assertNotNull(scoreResource.getScores(1));
     }
 
-    @Test
-    public void postAndGetScore() {
-        assertNotNull(scoreResource.postScore(jsonString));
-        assertNotNull(scoreResource.getScores(1));
-    }
-
-
+ 
 }

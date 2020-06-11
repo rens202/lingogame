@@ -20,4 +20,8 @@ public class Word {
     public Wordlist getWordlist() {
         return this.wordlist;
     }
+
+	public int getId() {
+		return this.id;
+	}
 }

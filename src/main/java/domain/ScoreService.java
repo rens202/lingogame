@@ -3,8 +3,18 @@ package domain;
 public class ScoreService {
 	WordService wordService = new WordService();
 	
-	public Score createScore(int id, String name, int wordlistId, int turns) {
-		Score result = new Score(id, name, wordService.createWordlist(wordlistId), turns);
+	public Score createScore(User user, int wordlistId, int turns) {
+		Score result = new Score(user, wordService.createWordlist(wordlistId), turns);
+		return result;
+	}
+
+	public Score createScore(int scoreId, User user, int wordlist, int turns) {
+		Score result = new Score(scoreId, user, wordService.createWordlist(wordlist), turns);
+		return result;
+	}
+	
+	public Score createScore(Game game) {
+		Score result = new Score(game.getUser(), game.getWord().getWordlist(), game.getTurn());
 		return result;
 	}
 

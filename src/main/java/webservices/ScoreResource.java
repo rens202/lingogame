@@ -18,19 +18,18 @@ import persistence.ScoreDaoImpl;
 public class ScoreResource {
 	ScoreDao scoreDao = new ScoreDaoImpl();
 	
-	@POST
-	@Produces("application/json")
-	@Consumes("application/json")
-	public Response postScore(String jsonData) {
-		Boolean result = scoreDao.postScore(jsonData);
-		return Response.ok(result).build();
-	}
-	
 	@GET
 	@Produces("application/json")
 	@Path("/{wordListId}")
 	public Response getScores(@PathParam("wordListId") int id){
 		ArrayList<Score> result = scoreDao.getScores(id);
+		return Response.ok(result).build();
+	}
+	
+	@GET
+	@Produces("application/json")
+	public Response getAllScores(){
+		ArrayList<Score> result = scoreDao.getScores();
 		return Response.ok(result).build();
 	}
 	

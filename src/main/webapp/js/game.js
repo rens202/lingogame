@@ -1,61 +1,54 @@
-let playingList;
-let playingWord;
-let playingWordId;
-let playingWordLength;
-let wordToGuess;
-let guessedWord;
 let turns;
+let sessionTurns;
+let wordlength;
+let disabled;
 
-
-function getWordsFromList(wordListId){
-	let url = "restservices/words/" + wordListId;
+function getTurn(){
+	let url = "restservices/games";
 	let fetchoptions = {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + window.sessionStorage.getItem("sessionToken"),
             }
         };
         fetch(url, fetchoptions)
             .then(function (response) {
                 if (response.ok) {
                 	response.json().then(function (data) {
-                        let length = data.length;
-                        if(length > 1){
-                        	let randomWordId = getRandomInt(length);
-                        	playingWord = data[randomWordId].word;
-                        	playingWordId = data[randomWordId].id;
-                        	playingWordLength = playingWord.length;
-                        	wordToGuess = playingWord;
+                			turns = data.turn;
+                			wordlength = data.wordlength;
                         	createGamePage();
-                        }
+                        
                     });
                     return;               	
+                }else{
+                	location.href = "index.html";
                 }
-                }).catch(error => console.error(error));
+                }).catch(error => console.error(error)
+                		);
 	
 }
 
 function startGame(){
-	playingList  = sessionStorage.getItem('playingList');
-	document.getElementById("title").append(" " + sessionStorage.getItem('playingListName'));
-	turns = 0;
-	getWordsFromList(playingList);
-}
-
-function getRandomInt(max) {
-	  return Math.floor(Math.random() * Math.floor(max));
+	disabled = false;
+	document.getElementById("submitGuess").disabled = false;
+	console.log("startgame");
+	sessionTurns = 0;
+	document.getElementById("title").append(" " + "");
+	getTurn();
+		
 }
 
 function createGamePage(){
-	turns++;
-	document.getElementById("count").innerHTML = turns;
-	for (var i = 0; i < playingWordLength; i++) {
+	document.getElementById("count").innerHTML = "Turn: " + turns;
+	for (var i = 0; i < wordlength; i++) {
 		var input = document.createElement('input');
 		input.setAttribute('id', 'character-' + i + '-turn'+ turns);
 		input.setAttribute('class', "inputcharacter");
 		input.setAttribute('maxlength', "1");
 		
-		if(turns != 1){
+		if(sessionTurns != 0){
 			if(document.getElementById('character-' + i + '-turn'+ (turns - 1)).getAttribute('correct')){
 				input.value = document.getElementById('character-' + i + '-turn'+ (turns - 1)).value;
 				input.setAttribute('correct', true);
@@ -69,19 +62,20 @@ function createGamePage(){
 	document.getElementById("word").appendChild(br);
 }
 
+document.getElementById("newGame").onclick = function newGame(){
+	location.href = "startGame.html";
+}
+
 document.getElementById("submitGuess").onclick = function submitGuess(){
-	if(checkEmptyInput()){ // Validate if all fields are not empty
-		if(checkInput()){
-			getScoreAndReset();
-		}else{
-			createGamePage();
-		}		
-	}
+	if(!disabled){
+		if(checkEmptyInput()){ // Validate if all fields are not empty
+			getInput();
+	}}
 }
 
 function getScores(){
 	
-	let url = "restservices/scores/" + playingList;
+	let url = "restservices/scores" ;
 	let fetchoptions = {
             method: 'GET',
             headers: {
@@ -102,113 +96,86 @@ function getScores(){
                         
                     });
                     return;               	
+                }else{
+                	location.href = "index.html";
                 }
                 }).catch(error => console.error(error));
 	
 }
 
-function getScoreAndReset(){
-	var name = prompt("Please enter your name:", "username");
-	if(name || name !== ""){
-		insertScore(name);
-	}
-}
-
-function insertScore(playerName){
-
-	let json = '{'
-		+'"name": "' + playerName + '",'
-		+'"wordlist": ' + playingList + ','
-		+'"turns": ' + turns + '}'
-	
-	if(playerName && playingList && turns > 0){
-		let url = "restservices/scores";
-		let fetchoptions = {
-	            method: 'POST',
-	            headers: {
-	                "Content-Type": "application/json",
-	            },
-	            body: json
-	        };
-	        fetch(url, fetchoptions)
-	            .then(function (response) {
-	                if (response.ok) {
-	                	alert("Succesfully added score");
-	                	}
-	                })
-	              }else{
-	            	  alert("Something went wrong, please try again");
-	            	  }
-	
-	
-	}
-
 function checkEmptyInput(){
 	let result = true;
-	let word = ""
-	for (var i = 0; i < playingWordLength; i++) {
-		if(result && !document.getElementById('character-' + i + '-turn' + turns).value){ //todo regex for bullshit
+	for (var i = 0; i < wordlength; i++) {
+		if(result && !document.getElementById('character-' + i + '-turn' + turns).value){ // todo
 			result = false;
-		}else{
-			word += document.getElementById('character-' + i + '-turn' + turns).value;
 		}
 		
 	}
-	guessedWord = word;
 	return result;
 }
 
-function checkInput(){
-	let result = false;
-	let guess = "";
-	let inputField;
-	for (var i = 0; i < playingWordLength; i++) {
-		
+function getInput(){
+	let result = false
+	var jsonobj = '{"input": ['
+	for (var i = 0; i < wordlength; i++) {
 		guess = document.getElementById("character-" + i + '-turn'+ turns).value;
-		inputField = document.getElementById("character-" + i +'-turn'+ turns);
-		
-		if(guess == playingWord[i]){
-			inputField.style.backgroundColor = "green";
-			inputField.disabled = true;
-			const regEx = new RegExp(guess, "g") //Variable so we can use our own variable in the regex. otherwise it would take variable name as string input
-			wordToGuess = wordToGuess.replace(regEx , '');
-			inputField.setAttribute('correct', true);
-
-		}else if((wordToGuess.includes(guess)) && (occurrences(wordToGuess, guess) >= occurrences(guessedWord, guess))){
-			inputField.style.backgroundColor = "orange";
-			inputField.disabled = true;
-			
-		}else{
-			inputField.style.backgroundColor = "red";
-			inputField.disabled = true;
+		if(i != 0){
+			jsonobj += ','
 		}
-		
-		if(!wordToGuess){
-			result = true;
-		} 
+		jsonobj += '{"index": ' + i + ', "input": "' + guess + '"}'
 	}
-	return result;
-}
+	jsonobj += ']}'
+	let fetchoptions = {
+            method: 'POST',
+            headers: {
+            	'Authorization': 'Bearer ' + window.sessionStorage.getItem("sessionToken"),
+                "Content-Type": "application/json",
+            },
+            body: jsonobj,
+        };
+        fetch("restservices/games", fetchoptions)
+            .then(function (response) {
+                if (response.ok) {
+                	response.json().then(function (data) {       
+                		if(data.status != 2){
+                			wordlength = data.wordlength;
+                			for (var i = 0; i < wordlength; i++) {
+                				inputField = document.getElementById("character-" + i +'-turn'+ turns);
+                				if(data.results[i].status == 2){
+                					inputField.style.backgroundColor = "green";
+                					inputField.disabled = true;  
+                					inputField.setAttribute('correct', true);                				
+                					}
+                				else if (data.results[i].status == 1){
+                					inputField.style.backgroundColor = "orange";
+                					inputField.disabled = true;
+                					}
+                				else{
+                					inputField.style.backgroundColor = "red";
+                					inputField.disabled = true;
+                					}               			
+                			}
+                		turns = data.turn;
+                		sessionTurns++;
+                		createGamePage();
+                }else{
+                	result = true;
+                	for (var i = 0; i < wordlength; i++) {
+        				inputField = document.getElementById("character-" + i +'-turn'+ turns);
+        				inputField.style.backgroundColor = "green";
+    					inputField.disabled = true;  }
+                	document.getElementById("submitGuess").disabled = true;
+                	disabled = true;
+                	alert("winner winner chicken dinner");
+                }}
+                ).catch(error => console.error(error));
+}})
 
-function occurrences(string, subString) {
+return result;
+        }
 
-    string += "";
-    subString += "";
-    if (subString.length <= 0) return (string.length + 1);
 
-    var n = 0,
-        pos = 0,
-        step = 1;
 
-    while (true) {
-        pos = string.indexOf(subString, pos);
-        if (pos >= 0) {
-            ++n;
-            pos += step;
-        } else break;
-    }
-    return n;
-}
 
 startGame();
 getScores();

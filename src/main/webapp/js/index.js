@@ -1,42 +1,42 @@
-let dropdown = document.getElementById("wordlists");
-let playingList;
-let playingListName;
 
+document.querySelector("#loginBtn").addEventListener("click", login);
 
+function login() {
+    let formData = new FormData(document.querySelector("#loginForm"));
+ 
+        let object = {};
+        formData.forEach(function (value, key) {
+            object[key] = value;
+        });
+        let json = JSON.stringify(object);
+        let fetchoptions = {
+            method: 'POST',
+            body: json,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
 
-document.getElementById("selectWordList").onclick = function () {
-	playingList = dropdown.options[dropdown.selectedIndex].value;
-	playingListName = dropdown.options[dropdown.selectedIndex].text;
-	
-	sessionStorage.setItem('playingList', playingList);
-	sessionStorage.setItem('playingListName', playingListName);
-	
-	location.href = "game.html";
-    };
-    
-    function getWordLists(){
-    	let fetchoptions = {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
+        fetch("restservices/authentication", fetchoptions)
+            .then(function (response) {
+                if (response.ok) {
+                    return response.json();
                 }
-            };
-            fetch("restservices/words", fetchoptions)
-                .then(function (response) {
-                    if (response.ok) {
-                    	response.json().then(function (data) {
-                            let option;
-                            for (let i = 0; i < data.length; i++) {
-                                option = document.createElement('option');
-                                option.text = data[i].name + " | " + data[i].language.code;
-                                option.value = data[i].id;
-                                dropdown.add(option);
-                            }
-                        });
-                        return;               	
-                    }
-                    }).catch(error => console.error(error));
-    	
+                else {
+                    document.getElementById("warning").innerHTML = "Wrong username or password";
+                    throw ("Wrong username/password");
+                }
+            })
+            .then(myJson => window.sessionStorage.setItem("sessionToken", myJson.JWT))
+            .then(function () {
+                window.sessionStorage.setItem("username", formData.get("username").toString());
+                document.location.href = "startGame.html"
+                
+            }).catch(error => console.error(error));
     }
-    
-getWordLists();
+   
+document.querySelector('#register').addEventListener("click", function () {
+    window.location.href = "registerpage.html";
+});
+
+

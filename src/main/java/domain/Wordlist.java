@@ -27,4 +27,8 @@ public class Wordlist {
     public String getName() {
         return this.name;
     }
+    
+    public Language getLanguage() {
+    	return this.language;
+    }
 }

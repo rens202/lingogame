@@ -10,4 +10,6 @@ public interface WordsDao {
     ArrayList<Wordlist> getWordLists();
 
 	ArrayList<Word> getWordsFromList(int id);
+
+	Word getRandomWord(int wordlistId);
 }

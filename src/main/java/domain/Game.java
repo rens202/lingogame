@@ -62,10 +62,7 @@ public class Game {
 		this.status = i;
 		
 	}
-	public void setTurn(int i) {
-		this.turn = i;
-		
-	}
+
 	
 	
 

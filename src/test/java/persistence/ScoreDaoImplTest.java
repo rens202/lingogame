@@ -1,41 +1,58 @@
 package persistence;
 
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-
+import domain.Language;
 import domain.Score;
 import domain.User;
 import domain.Wordlist;
-
-import java.sql.Connection;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-public class ScoreDaoImplTest extends PostgresBaseDao {
-    ScoreDao scoreDao;
-    Connection connection;
-    Score score;
-    
-    @Before
-    public void setUp() {
-        scoreDao = new ScoreDaoImpl();
-        connection = super.getConnection();
-        score = new Score(new User(2, "rens"), new Wordlist(1), 0);
-    }
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-    @Test
-    public void connectionNull(){
-        assertNull(connection);
+@RunWith(MockitoJUnitRunner.class)
+public class ScoreDaoImplTest {
+    ScoreDao scoreDao;
+    Score score;
+    Wordlist wordlist;
+    User user;
+    @Mock ResultSet res;
+
+    @Before
+    public void setUp() throws Exception {
+        scoreDao = new ScoreDaoImpl();
+        wordlist = new Wordlist(1, "name", new Language());
+        user = new User(1, "Rens");
+        score = new Score(user ,wordlist, 5);
     }
 
     @Test
     public void postScore() {
-       // assertTrue(scoreDao.postScore(score));
+        try{
+        scoreDao.postScore(score);}catch(Exception e){}
     }
 
     @Test
     public void getScores() {
-        //assertNotNull(scoreDao.getScores(1));
+        try{scoreDao.getScores(1);}
+        catch(Exception e){}
+    }
+
+    @Test
+    public void getScores1() {
+        try{scoreDao.getScores();}catch(Exception e){}
+    }
+    
+    @Test
+    public void toScore() throws SQLException{
+		Mockito.when(res.getString("username")).thenReturn("username");
+		Mockito.when(res.getInt("userid")).thenReturn(1);
+    	scoreDao.resultSetToScore(res);
     }
 }

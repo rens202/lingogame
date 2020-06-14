@@ -16,6 +16,8 @@ public class GameService {
 	WordsDao wordsDao = new WordsDaoImpl();
 	GameDao gameDao = new GameDaoImpl();
 	UserDao userDao = new UserDaoImpl();
+	ScoreDao scoreDao = new ScoreDaoImpl();
+	Boolean isWinner = false;
 
 	public Boolean startGame(int id, String username) {
 		Boolean result = false;
@@ -40,7 +42,7 @@ public class GameService {
 		
 		System.out.println("Received User, Game & Guessedword!");
 
-		Boolean isWinner = checkWinner(game, guessedWord);
+		checkWinner(game, guessedWord);
 		
 		if (!isWinner) {
 			System.out.println("Is not a winner, processing input....");
@@ -55,7 +57,6 @@ public class GameService {
 		game.addTurn();
 
 		if (isWinner) {
-			game.setStatus(2);
 			postScore(game);
 		} else if (game.getStatus() == 0) {
 			game.setStatus(1);
@@ -70,42 +71,39 @@ public class GameService {
 		return result;
 
 	}
-	
-	private void postScore(Game game) {
+
+	public void postScore(Game game) {
 		System.out.println("winner");
 		ScoreService scoreService = new ScoreService();
 		Score score = scoreService.createScore(game);
-		ScoreDao scoreDao = new ScoreDaoImpl();
 		scoreDao.postScore(score);
 	}
 
-	private String getGuessedWord(JSONArray c) {
+	public String getGuessedWord(JSONArray c) {
 		String result = "";
 		for (int i = 0; i < c.length(); i++) {
 			JSONObject obj = c.getJSONObject(i);
 			result += obj.get("input").toString();
-			;
 		}
 
 		return result;
 	}
 
-	private Boolean checkWinner(Game game, String guessedWord) {
-		Boolean result = false;
+	public void checkWinner(Game game, String guessedWord) {
 		if (game.getWord().getWord().toLowerCase().equals(guessedWord.toLowerCase())) {
-			result = true;
+			game.setStatus(2);
+			isWinner = true;
 		}
-		return result;
 	}
 
-	private JSONObject checkInput(int location, String input, Game game, String guessedWord) {
+	public JSONObject checkInput(int location, String input, Game game, String guessedWord) {
 		JSONObject json = new JSONObject();
 		String word = game.getWord().getWord();
 		if (word.charAt(location) == input.charAt(0)) {
 			json.put("index", location);
 			json.put("status", 2);
 		} else if (word.contains(input)
-				&& occurences(word, input.charAt(0)) >= occurences(guessedWord, input.charAt(0))) { // TODO CONTAINS >	INPUT SO YOU CANT spAM EEEEEEEEE
+				&& occurences(word, input.charAt(0)) >= occurences(guessedWord, input.charAt(0))) {
 			json.put("index", location);
 			json.put("status", 1);
 		} else {
@@ -146,7 +144,7 @@ public class GameService {
 	}
 
 	public String getTurn(String username) {
-		String result = "";
+		String result;
 		User user = userDao.findByUsername(username);
 		Game game = gameDao.getGameByUser(user);
 

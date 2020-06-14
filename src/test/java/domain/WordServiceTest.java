@@ -1,26 +1,35 @@
 package domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
-public class WordServiceTest extends WordService{
-    WordService wordService = new WordService();
-    Language language = new Language();
+public class WordServiceTest {
+    WordService wordService;
+    Word word;
+    Wordlist wordlist;
+    Wordlist wordlist2;
+
+    @Before
+    public void before(){
+        wordService = new WordService();
+
+    }
+
+    @Test
+    public void createWordlist() {
+        wordlist = wordService.createWordlist(1);
+    }
+
+    @Test
+    public void createWordlist1() {
+        wordlist2 = wordService.createWordlist("name", 1, new Language());
+    }
 
     @Test
     public void createWord() {
-        Wordlist wordlist = wordService.createWordlist("name", 1, language);
-        assertNotNull(wordlist);
-        Word word = wordService.createWord(1, "word", wordlist);
-        assertNotNull(word);
-        assertEquals(wordlist, word.getWordlist());
-
-
+        word = wordService.createWord(1, "name", wordlist);
     }
-    @Test
-    public void createWordList() {
-        assertNotNull(wordService.createWordlist(1));
-    }
+
 }

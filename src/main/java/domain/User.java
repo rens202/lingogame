@@ -22,9 +22,6 @@ public class User {
 	public String getUsername() {
 		return this.username;
 	}
-	public void SetUsername(String username) {
-		this.username = username;
-	}
 	public String getPassword() {
 		return this.password;
 	}

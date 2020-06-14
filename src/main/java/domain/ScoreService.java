@@ -2,11 +2,6 @@ package domain;
 
 public class ScoreService {
 	WordService wordService = new WordService();
-	
-	public Score createScore(User user, int wordlistId, int turns) {
-		Score result = new Score(user, wordService.createWordlist(wordlistId), turns);
-		return result;
-	}
 
 	public Score createScore(int scoreId, User user, int wordlist, int turns) {
 		Score result = new Score(scoreId, user, wordService.createWordlist(wordlist), turns);

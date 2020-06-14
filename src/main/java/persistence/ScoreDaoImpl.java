@@ -81,7 +81,8 @@ public class ScoreDaoImpl extends PostgresBaseDao implements ScoreDao {
 		return result;
 	}
 
-	private Score resultSetToScore(ResultSet res) {
+	@Override
+	public Score resultSetToScore(ResultSet res) {
 		Score result = null;
 		try {
 			int wordlistId = res.getInt("wordlist");

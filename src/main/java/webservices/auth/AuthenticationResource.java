@@ -33,6 +33,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes(APPLICATION_JSON)
 public class AuthenticationResource {
     final static public Key key = MacProvider.generateKey();
+    UserDao dao = new UserDaoImpl();
 
     @POST
     @Produces("application/json")
@@ -40,7 +41,6 @@ public class AuthenticationResource {
     public Response authenticateUser(String jsondata) throws IOException {
         try {
             //Authenticate the user against the database
-            UserDao dao = new UserDaoImpl();
             JSONObject object = new JSONObject(jsondata);
             String username = object.get("username").toString();
     		String password = object.get("password").toString();
@@ -68,7 +68,6 @@ public class AuthenticationResource {
     @Produces(APPLICATION_JSON)
     @Consumes(APPLICATION_JSON)
     public Response registerUser(String jsondata) throws IOException {
-        UserDao dao = new UserDaoImpl();
         JSONObject object = new JSONObject(jsondata);
 
 		String username = object.get("username").toString();

@@ -12,10 +12,6 @@ public class Language {
         this.code = code;
     }
 
-    public Language(int wordListLanguage) {
-		this.id = wordListLanguage;
-	}
-
 	public Language() {
 	}
 

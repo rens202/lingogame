@@ -1,28 +1,43 @@
 package domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class WordlistTest {
-    Language language = new Language();
-    Wordlist wordlist = new Wordlist(1, "name", language);
+    Wordlist wordlist;
+    Language language;
+    Wordlist wordlist2;
 
+    @Before
+    public void before(){
+        wordlist = new Wordlist(1);
+        language = new Language();
+        wordlist2 = new Wordlist(1, "name", language);
+    }
 
     @Test
     public void getId() {
-        assertEquals(1, wordlist.getId());
+        assertNotNull(wordlist.getId());
     }
 
     @Test
     public void setId() {
-        assertEquals(1, wordlist.getId());
         wordlist.setId(2);
-        assertEquals(2, wordlist.getId());
+        assertNotEquals(wordlist, wordlist2);
     }
 
     @Test
     public void getName() {
-        assertEquals("name", wordlist.getName());
+        assertNull(wordlist.getName());
+        assertNotNull(wordlist2.getName());
+    }
+
+    @Test
+    public void getLanguage() {
+        assertNull(wordlist.getLanguage());
+        assertNotNull(wordlist2.getLanguage());
+
     }
 }

@@ -30,24 +30,7 @@ public class UserDaoImpl extends PostgresBaseDao implements UserDao {
         return result;
     }
 
-    @Override
-    public User find(int id) {
-        User result = null;
-        try {
-            Connection con = super.getConnection();
-            PreparedStatement pstmt = con.prepareStatement("Select * FROM Users WHERE id = ?");
-            pstmt.setInt(1, id);
-            ResultSet dbResultSet = pstmt.executeQuery();
-            if (dbResultSet.next()) {
-            	result = toUser(dbResultSet);
-            }
-            con.close();
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
-        }
-        return result;
-    }
-    
+
     @Override
     public boolean saveNewUser(User user) {
         try {
@@ -67,8 +50,8 @@ public class UserDaoImpl extends PostgresBaseDao implements UserDao {
         return false;
     }
     
-    
-    private User toUser(ResultSet rs) {
+    @Override
+    public User toUser(ResultSet rs) {
         User user = null;
         try {
             int id = rs.getInt("id");

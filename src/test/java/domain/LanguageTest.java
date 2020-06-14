@@ -1,32 +1,36 @@
 package domain;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class LanguageTest {
+    Language language;
+    Language language2;
 
-    Language language = new Language(1, "Nederlands", "NED");
-    Language languageWithoutAttribute = new Language();
-    Language languageId = new Language(2);
+    @Before
+    public void before(){
+        language = new Language();
+        language2 = new Language(1, "Nederlands", "NED");
+    }
 
     @Test
     public void getCode() {
-        assertEquals("", language.getCode(), "NED");
-        assertNull(languageWithoutAttribute.getCode());
-        assertNull(languageId.getCode());
+        assertNull(language.getCode());
+        assertNotNull(language2.getCode());
+
     }
 
     @Test
     public void getId() {
-        assertEquals(language.getId(), 1);
-        assertEquals(languageId.getId(), 2);
+        assertEquals(0, language.getId());
+        assertNotNull(language2.getId());
     }
 
     @Test
     public void getName() {
-        assertEquals(language.getName(), "Nederlands");
-        assertNull(languageWithoutAttribute.getName());
-        assertNull(languageId.getName());
+        assertNull(language.getName());
+        assertNotNull(language2.getName());
     }
 }

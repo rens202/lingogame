@@ -1,33 +1,49 @@
 package persistence;
 
-import domain.Word;
 import domain.Wordlist;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.sql.Connection;
-import java.util.ArrayList;
+import java.sql.ResultSet;
 
 import static org.junit.Assert.*;
 
-public class WordsDaoImplTest extends PostgresBaseDao{
+@RunWith(MockitoJUnitRunner.class)
+public class WordsDaoImplTest {
     WordsDao wordsDao;
-    Connection connection;
+    @Mock
+    ResultSet res;
+    Wordlist wordlist;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         wordsDao = new WordsDaoImpl();
-        connection = super.getConnection();
-    }
-
-    @Test
-    public void connectionNull(){
-        assertNull(connection);
+        Mockito.when(res.getInt("id")).thenReturn(1);
+        Mockito.when(res.getString("word")).thenReturn("word");
     }
 
     @Test
     public void getWordLists() {
-        //ArrayList<Wordlist> wordlists = wordsDao.getWordLists();
-        //assertNotNull(wordlists);
+        try{wordsDao.getWordLists();}catch(Exception e){}
     }
+
+    @Test
+    public void getRandomWord() {
+        try{wordsDao.getRandomWord(1);}catch(Exception e){}
+    }
+
+    @Test
+    public void createWordFromResultset() {
+        try{wordsDao.createWordFromResultset(res, wordlist);}catch(Exception e){}
+    }
+
+    @Test
+    public void createWordlistFromResultSet() {
+        try{wordsDao.createWordlistFromResultSet(res);}catch(Exception e){}
+    }
+
 }

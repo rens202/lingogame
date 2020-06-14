@@ -15,7 +15,7 @@ public class WordsDaoImpl extends PostgresBaseDao implements WordsDao {
 		ArrayList<Wordlist> result = new ArrayList<>();
 		try (Connection con = super.getConnection()) {
 			PreparedStatement pst = con.prepareStatement(
-					"select wordlists.lid as wordlist, wordlists.name as wordlistname, wordlists.language as language, languages.code as languagecode, languages.name as languagename from wordlists wl inner join languages on languages.id = wl.language where exists (select word from words where wordlist = wl.id)");
+					"select wordlists.id as wordlist, wordlists.name as wordlistname, wordlists.language as language, languages.code as languagecode, languages.name as languagename from wordlists inner join languages on languages.id = wordlists.language where exists (select word from words where wordlist = wordlists.id)");
 			ResultSet res = pst.executeQuery();
 			if (res != null) {
 				while (res.next()) {

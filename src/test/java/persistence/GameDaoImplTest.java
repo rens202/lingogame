@@ -53,7 +53,6 @@ public class GameDaoImplTest {
     @Test
     public void resultset() throws SQLException {
         Mockito.when(res.getInt("id")).thenReturn(1);
-        Mockito.when(res.getString("word")).thenReturn("word");
         assertNotNull(gameDao.resultSetToGame(res, user));
     }
 }

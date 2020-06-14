@@ -52,7 +52,6 @@ public class ScoreDaoImplTest {
     @Test
     public void toScore() throws SQLException{
 		Mockito.when(res.getString("username")).thenReturn("username");
-		Mockito.when(res.getInt("userid")).thenReturn(1);
     	scoreDao.resultSetToScore(res);
     }
 }
